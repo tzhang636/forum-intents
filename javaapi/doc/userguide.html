@@ -1,0 +1,660 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title>Using the MetaMap Java API</title>
+	<meta name="author" content="Willie Rogers">
+	<meta name="GENERATOR" content = "Almost Free Text v5.097; Copyright 1996-2009 Todd Coram.">
+<style type="text/css">
+  <!--
+	.section5 { padding-left: 50pt; }
+	.section6 { padding-left: 75pt; }
+	.section7 { padding-left: 100pt; }
+html { background: #eee; color: #000; }
+
+body { background: #eee; color: #000; margin: 0; padding: 0;}
+
+div.body {
+	background: #fff; color: #000;
+	margin: 0 1em 0 1em; padding: 1em;
+	font-family: serif;
+	font-size: 1em; line-height: 1.2em;
+	border-width: 0 1px 0 1px;
+	border-style: solid;
+	border-color: #aaa;
+}
+
+div.block {
+	background: #F8F8FF; color: #000;
+	margin: 1em; padding: 0 1em 0 1em;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #909090;
+}
+
+table {
+	background: #F8F8F8; color: #000;
+	margin: 1em;
+	border-width: 0 0 0 1px;
+	border-style: solid;
+	border-color: #C0C0C0;
+}
+
+td {
+	border-width: 0 1px 1px 0;
+	border-style: solid;
+	border-color: #C0C0C0;
+}
+
+th {
+	background: #F8F8FF;
+	border-width: 1px 1px 2px 0;
+	border-style: solid;
+	border-color: #C0C0C0;
+}
+
+
+/* body text, headings, and rules */
+
+p { margin: 0; text-indent: 0em; margin: 0 0 0.5em 0 }
+
+h1, h2, h3, h4, h5, h6 {
+	color: #206020; background: transparent;
+	font-family: Optima, Arial, Helvetica, sans-serif;
+	font-weight: normal;
+}
+
+/*
+h1 { font-size: 1.69em; margin: 1.4em 0 0.4em 0; }
+h2 { font-size: 1.44em; margin: 1.4em 0 0.4em 0; }
+h3 { font-size: 1.21em; margin: 1.4em 0 0.4em 0; }
+h4 { font-size: 1.00em; margin: 1.4em 0 0.4em 0; }
+h5 { font-size: 0.81em; margin: 1.4em 0 0.4em 0; }
+h6 { font-size: 0.64em; margin: 1.4em 0 0.4em 0; }
+*/
+
+hr {
+	color: transparent; background: transparent;
+	height: 0px; margin: 0.6em 0;
+	border-width: 1px ;
+	border-style: solid;
+	border-color: #999;
+}
+
+/* bulleted lists and definition lists */
+
+ul { margin: 0 1em 0.6em 2em; padding: 0; }
+li { margin: 0.4em 0 0 0; }
+
+dl { margin: 0.6em 1em 0.6em 2em; }
+dt { color: #206020; }
+
+tt { color: #602020; }
+
+/* links */
+
+a.link {
+	color: #33c; background: transparent;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #000; background: transparent;
+}
+
+body > a {
+	font-family: Optima, Arial, Helvetica, sans-serif;
+	font-size: 0.81em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	color: #206020; background: transparent;
+	font-family: Optima, Arial, Helvetica, sans-serif;
+	font-weight: normal;
+}
+
+  -->
+</style>
+</head>
+<body>
+<div class="body">
+
+<br><center><h1><a name="AFT-top">Using the MetaMap Java API</a></h1></center>
+<br><center><h2>Willie Rogers</h2></center>
+<!-- Start SectLevel1 -->
+<h2><a name="Purpose">Purpose</a></h2>
+<p class="Body">
+MetaMap maps terms occuring in text to UMLS Metathesaurus concepts. As
+part of this mapping process, MetaMap tokenizes text into sections,
+sentences, phrases, terms, and words. MetaMap maps the noun phrases of
+the text to the best matching UMLS concept or set of concepts that
+best cover each phrase.  The MetaMap Java API provides java programs
+with programmatic access to MetaMap mapping engine.
+</p>
+<!--End Section 1-->
+<h2><a name="MetaMap API's Underlying Architecture">MetaMap API's Underlying Architecture</a></h2>
+<p class="Body">
+MetaMap mapping engine is written primarily in Quintus Prolog; to
+facilitate its use by Java programs, the system uses PrologBeans to
+provide a loose coupling between the Java API and the mapping engine.
+See the Quintus Prolog PrologBeans documentation for more information
+(<a class="link" href="http://www.sics.se/isl/quintus/html/quintus/pbn.html">http://www.sics.se/isl/quintus/html/quintus/pbn.html</a>).
+</p>
+<!--End Section 1-->
+<h2><a name="Pre-requisites">Pre-requisites</a></h2>
+<p class="Body">
+The full MetaMap download and installation is required to use the
+MetaMap Java API (see \http://metamap.nlm.nih.gov/#Downloads).  Also,
+Java 1.6 SDK or greater is required.  (It should work Java 1.5 but it
+has not been tested with Java 1.5)
+</p>
+<!--End Section 1-->
+<h2><a name="Downloading, Extracting and Installing the API distribution">Downloading, Extracting and Installing the API distribution</a></h2>
+<p class="Body">
+In the directory where you installed the Public Metamap (the directory
+containing the public_mm directory) extract the javaapi archive:
+</p>
+<div class="block"><pre>
+$ bzip2 -dc /home/piro/public_mm_linux_javaapi_2010.tar.bz2 | tar xvf -
+</pre></div>
+<p class="Body">
+If you plan on modifying the sources to the prolog-based MetaMap
+server (mmserver) you will need to download and extract the source
+archive
+(<a class="link" href="http://metamap.nlm.nih.gov/download/public_mm_src_2010.tar.bz2">http://metamap.nlm.nih.gov/download/public_mm_src_2010.tar.bz2</a>) as
+well:
+</p>
+<div class="block"><pre>
+$ bzip2 -dc /home/piro/public_mm_src_2010.tar.bz2 | tar xvf -
+</pre></div>
+<p class="Body">
+You will need to re-run ./bin/install.sh from the public_mm directory
+to setup the files for javaapi.
+</p>
+<div class="block"><pre>
+$ ./bin/install.sh
+</pre></div>
+<!--End Section 1-->
+<h2><a name="Using the metamap server">Using the metamap server</a></h2>
+<!-- Start SectLevel2 -->
+<h3><a name="Starting supporting servers">Starting supporting servers</a></h3>
+<p class="Body">
+The metamap server (mmserver) must first be running to use the Java
+API.  If the SKR/Medpost Tagger is not already running start it using
+the following command:
+</p>
+<div class="block"><pre>
+$ ./bin/skrmedpostctl start
+</pre></div>
+<p class="Body">
+If you wish to the Word Sense Disambiguation (WSD) Server (optional),
+start it also.
+</p>
+<div class="block"><pre>
+$ ./bin/wsdserverctl start
+</pre></div>
+<!--End Section 2-->
+<h3><a name="Running the metamap server">Running the metamap server</a></h3>
+<p class="Body">
+Then start the metamap server:
+</p>
+<div class="block"><pre>
+$ ./bin/mmserver10
+/home/piro/public_mm/bin/SKRrun -L 2010 \
+     -w /home/piro/public_mm/lexicon /home/piro/public_mm/bin/mmserver10.BINARY.Linux -Z 10
+Server options: [port(8888),accepted_hosts(['127.0.0.1','130.14.111.76','130.14.110.82'])]
+Berkeley DB databases (normal 10 strict model) are open.
+Static variants will come from table varsan in /home/piro/public_mm/DB/BDB4/DB.normal.10.strict.
+Derivational Variants: Adj/noun ONLY.
+Accessing lexicon /home/piro/public_mm/lexicon/data/BDB4/lexiconStatic2010.
+Variant generation mode: stat&gt;ic.
+</pre></div>
+<!--End Section 2-->
+<!-- End SectLevel2 -->
+<!--End Section 1-->
+<h2><a name="Testing the API">Testing the API</a></h2>
+<p class="Body">
+Using another terminal, you can verify that api is running using the
+program <tt>testapi.sh</tt> which takes a query as an argument:
+</p>
+<div class="block"><pre>
+$ ./testapi.sh laboratory culture
+options: []
+terms: laboratory culture 
+input text: 
+ laboratory culture 
+Utterance:
+ Id: 00000000.tx.1
+ Utterance text: laboratory culture 
+ Position: (0, 19)
+Phrase:
+ text: laboratory culture
+ Minimal Commitment Parse: [head([lexmatch([laboratory culture]),inputmatch([laboratory,culture]),tag(noun),tokens([laboratory,culture])])]
+Candidates:
+ Candidate:
+  Score: -1000
+  Concept Id: C0430400
+  Concept Name: Laboratory culture
+  Preferred Name: Laboratory culture
+  Matched Words: [laboratory, culture]
+  Semantic Types: [lbpr]
+  MatchMap: [[[1, 2], [1, 2], 0]]
+  MatchMap alt. repr.: [[[phrase start: 1, phrase end: 2], [concept start: 1, concept end: 2], lexical variation: 0]]
+  is Head?: true
+  is Overmatch?: false
+  Sources: [MTH, LNC, MDR, NCI, RCD, MEDCIN, CCPSS, SNOMEDCT]
+  Positional Info: [(0, 18)]
+ Candidate:
+  Score: -861
+  Concept Id: C0010453
+  Concept Name: Culture
+  Preferred Name: Anthropological Culture
+  Matched Words: [culture]
+  Semantic Types: [idcn]
+  MatchMap: [[[2, 2], [1, 1], 0]]
+  MatchMap alt. repr.: [[[phrase start: 2, phrase end: 2], [concept start: 2, concept end: 2], lexical variation: 0]]
+  is Head?: true
+  is Overmatch?: false
+  Sources: [MTH, PSY, ICNP, LCH, MSH, NCI, CSP]
+  Positional Info: [(11, 7)]
+ Candidate:
+  Score: -861
+  Concept Id: C0022877
+  Concept Name: Laboratory
+  Preferred Name: Laboratory
+  Matched Words: [laboratory]
+  Semantic Types: [mnob, orgt]
+  MatchMap: [[[1, 1], [1, 1], 0]]
+  MatchMap alt. repr.: [[[phrase start: 1, phrase end: 1], [concept start: 1, concept end: 1], lexical variation: 0]]
+  is Head?: true
+  is Overmatch?: false
+  Sources: [LNC, MSH, MTH, NCI, RCD, SNOMEDCT, OMIM, LCH, ALT]
+  Positional Info: [(0, 10)]
+ Candidate:
+  Score: -861
+  Concept Id: C0220814
+  Concept Name: culture
+  Preferred Name: Cultural aspects
+  Matched Words: [culture]
+  Semantic Types: [ftcn]
+  MatchMap: [[[2, 2], [1, 1], 0]]
+  MatchMap alt. repr.: [[[phrase start: 2, phrase end: 2], [concept start: 2, concept end: 2], lexical variation: 0]]
+  is Head?: true
+  is Overmatch?: false
+  Sources: [MTH, MSH]
+  Positional Info: [(11, 7)]
+ Candidate:
+  Score: -861
+  Concept Id: C0430400
+  Concept Name: Culture
+  Preferred Name: Laboratory culture
+  Matched Words: [culture]
+  Semantic Types: [lbpr]
+  MatchMap: [[[2, 2], [1, 1], 0]]
+  MatchMap alt. repr.: [[[phrase start: 2, phrase end: 2], [concept start: 2, concept end: 2], lexical variation: 0]]
+  is Head?: true
+  is Overmatch?: false
+  Sources: [MTH, LNC, MDR, NCI, RCD, MEDCIN, CCPSS, SNOMEDCT]
+  Positional Info: [(11, 7)]
+ Candidate:
+  Score: -861
+  Concept Id: C1706355
+  Concept Name: CULTURE
+  Preferred Name: Culture Dose Form
+  Matched Words: [culture]
+  Semantic Types: [bodm]
+  MatchMap: [[[2, 2], [1, 1], 0]]
+  MatchMap alt. repr.: [[[phrase start: 2, phrase end: 2], [concept start: 2, concept end: 2], lexical variation: 0]]
+  is Head?: true
+  is Overmatch?: false
+  Sources: [MTH, NCI]
+  Positional Info: [(11, 7)]
+ Candidate:
+  Score: -861
+  Concept Id: C2242979
+  Concept Name: Culture
+  Preferred Name: Culture
+  Matched Words: [culture]
+  Semantic Types: [lbpr]
+  MatchMap: [[[2, 2], [1, 1], 0]]
+  MatchMap alt. repr.: [[[phrase start: 2, phrase end: 2], [concept start: 2, concept end: 2], lexical variation: 0]]
+  is Head?: true
+  is Overmatch?: false
+  Sources: [MTH, SNOMEDCT, SNM, SNMI]
+  Positional Info: [(11, 7)]
+ Candidate:
+  Score: -827
+  Concept Id: C1619828
+  Concept Name: Laboratories
+  Preferred Name: Laboratories
+  Matched Words: [laboratories]
+  Semantic Types: [inpr]
+  MatchMap: [[[1, 1], [1, 1]]]
+  MatchMap alt. repr.: [[[phrase start: 1, phrase end: 1], [concept start: 1, concept end: 1], lexical variation: 0]]
+  is Head?: true
+  is Overmatch?: false
+  Sources: [MTH, HL7V3.0]
+  Positional Info: [(0, 10)]
+Mappings:
+ Map Score: -1000
+   Score: -1000
+   Concept Id: C0430400
+   Concept Name: Laboratory culture
+   Preferred Name: Laboratory culture
+   Matched Words: [laboratory, culture]
+   Semantic Types: [lbpr]
+   MatchMap: [[[1, 2], [1, 2], 0]]
+   MatchMap alt. repr.: [[[phrase start: 1, phrase end: 2], [concept start: 1, concept end: 2], lexical variation: 0]]
+   is Head?: true
+   is Overmatch?: false
+   Sources: [MTH, LNC, MDR, NCI, RCD, MEDCIN, CCPSS, SNOMEDCT]
+   Positional Info: [(0, 18)]
+$
+</pre></div>
+<p class="Body">
+The source to java class used <tt>testapi.sh</tt> is in
+<tt>./src/javaapi/sources/gov/nih/nlm/nls/metamap/MetaMapApiTest.java</tt>.
+</p>
+<!--End Section 1-->
+<h2><a name="Using the API">Using the API</a></h2>
+<!-- Start SectLevel2 -->
+<h3><a name="Instantiating the API">Instantiating the API</a></h3>
+<p class="Body">
+The following sections expose the source code used to produce the
+example output shown in previous section
+</p>
+<div class="block"><pre>
+MetaMapApi api = new MetaMapApiImpl();
+</pre></div>
+<p class="Body">
+If one is running the MetaMap server (mmserver) of a machine other
+than the one the Java api client is running, one can specify the
+hostname of the MetaMap server when instantiating the api:
+</p>
+<p class="Body">
+If the MetaMap server is running on the host: &quot;resource.example.org&quot;
+then the instantiation would be as follows:
+</p>
+<div class="block"><pre>
+MetaMapApi api = new MetaMapApiImpl(&quot;resource.example.org&quot;);
+</pre></div>
+<!--End Section 2-->
+<h3><a name="Setting MetaMap options">Setting MetaMap options</a></h3>
+<div class="block"><pre>
+    List&lt;String&gt; theOptions = new ArrayList&lt;String&gt;();
+    theOptions.append(&quot;-y&quot;);  // turn on Word Sense Disambiguation
+    if (theOptions.size() &gt; 0) {
+      api.setOptions(theOptions);
+    }
+</pre></div>
+<p class="Body">
+Metamap options available in the api: 
+</p>
+<div class="block"><pre>
+   -@ --WSD &lt;hostname&gt;                   : Which WSD server to use.
+   -8 --dynamic_variant_generation       : dynamic variant generation
+   -A --strict_model                     : use strict model 
+   -C --relaxed_model                    : use relaxed model 
+   -D --all_derivational_variants        : all derivational variants
+   -J --restrict_to_sts &lt;semtypelist&gt;    : restrict to semantic types
+   -K --ignore_stop_phrases              : ignore stop phrases.
+   -R --restrict_to_sources &lt;sourcelist&gt; : restrict to sources
+   -S --tagger &lt;sourcelist&gt;              : Which tagger to use.
+   -V --mm_data_version &lt;name&gt;           : version of MetaMap data to use.
+   -X --truncate_candidates_mappings     : truncate candidates mapping
+   -Y --prefer_multiple_concepts         : prefer multiple concepts
+   -Z --mm_data_year &lt;name&gt;              : year of MetaMap data to use.
+   -a --all_acros_abbrs                  : allow Acronym/Abbreviation variants
+   -b --compute_all_mappings             : compute/display all mappings
+   -d --no_derivational_variants         : no derivational variants
+   -e --exclude_sources &lt;sourcelist&gt;     : exclude semantic types
+   -g --allow_concept_gaps               : allow concept gaps
+   -i --ignore_word_order                : ignore word order
+   -k --exclude_sts &lt;semtypelist&gt;        : exclude semantic types
+   -l --allow_large_n                    : allow Large N
+   -o --allow_overmatches                : allow overmatches 
+   -r --threshold &lt;integer&gt;              : Threshold for displaying candidates. 
+   -y --word_sense_disambiguation        : use WSD 
+   -z --term_processing                  : use term processing 
+</pre></div>
+<!--End Section 2-->
+<h3><a name="Performing a query using the api">Performing a query using the api</a></h3>
+<div class="block"><pre>
+List&lt;Result&gt; resultList = api.processCitationsFromString(terms);
+</pre></div>
+<!--End Section 2-->
+<h3><a name="Interrogating the result">Interrogating the result</a></h3>
+<!-- Start SectLevel3 -->
+<h4><a name="Getting Acronyms and Abbreviations">Getting Acronyms and Abbreviations</a></h4>
+<p class="Body">
+To get a list of all the acronyms and abbreviations occurring in the
+input text use the instance method <tt>Result.getAcronymsAbbrevs</tt>:
+</p>
+<div class="block"><pre>
+Result result = resultList.get(0);
+List&lt;AcronymsAbbrevs&gt; aaList = result.getAcronymsAbbrevs();
+if (aaList.size() &gt; 0) {
+  System.out.println(&quot;Acronyms and Abbreviations:&quot;);
+  for (AcronymsAbbrevs e: aaList) {
+    System.out.println(&quot;Acronym: &quot; + e.getAcronym());
+    System.out.println(&quot;Expansion: &quot; + e.getExpansion());
+    System.out.println(&quot;Count list: &quot; + e.getCountList());
+    System.out.println(&quot;CUI list: &quot; + e.getCUIList());
+  }
+} else {
+  System.out.println(&quot; None.&quot;);
+}
+</pre></div>
+<!--End Section 3-->
+<h4><a name="Getting Negations">Getting Negations</a></h4>
+<p class="Body">
+To get a list of all the negated concepts in the input text use the
+instance method <tt>Result.getNegations</tt>:
+</p>
+<div class="block"><pre>
+List&lt;Negation&gt; negList = result.getNegations();
+if (negList.size() &gt; 0) {
+  System.out.println(&quot;Negations:&quot;);
+  for (Negation e: negList) {
+    System.out.println(&quot;type: &quot; + e.getType());
+    System.out.print(&quot;Trigger: &quot; + e.getTrigger() + &quot;: [&quot;);
+    for (Position pos: e.getTriggerPositionList()) {
+      System.out.print(pos  + &quot;,&quot;);
+    }
+    System.out.println(&quot;]&quot;);
+    System.out.print(&quot;ConceptPairs: [&quot;);
+    for (ConceptPair pair: e.getConceptPairList()) {
+      System.out.print(pair + &quot;,&quot;);
+    }
+    System.out.println(&quot;]&quot;);
+    System.out.print(&quot;ConceptPositionList: [&quot;);
+    for (Position pos: e.getConceptPositionList()) {
+      System.out.print(pos + &quot;,&quot;);
+    }
+    System.out.println(&quot;]&quot;);
+  }
+} else {
+	System.out.println(&quot; None.&quot;);
+}
+</pre></div>
+<!--End Section 3-->
+<h4><a name="Getting Utterances and Associated Phrases, Candidates, and Mappings">Getting Utterances and Associated Phrases, Candidates, and Mappings</a></h4>
+<p class="Body">
+The instance method <tt>Result.getUtteranceList()</tt> produces a list of
+the utterances present in the result:
+</p>
+<div class="block"><pre>
+for (Utterance utterance: result.getUtteranceList()) {
+	System.out.println(&quot;Utterance:&quot;);
+	System.out.println(&quot; Id: &quot; + utterance.getId());
+	System.out.println(&quot; Utterance text: &quot; + utterance.getString());
+	System.out.println(&quot; Position: &quot; + utterance.getPosition());
+</pre></div>
+<p class="Body">
+To get the list of phrases, candidates, and mappings associated with
+an utterance use the instance method <tt>Utterance.getPCMList</tt>:
+</p>
+<div class="block"><pre>
+	for (PCM pcm: utterance.getPCMList()) {
+</pre></div>
+<p class="Body">
+Each phrase, and the list of candidates and mappings associated with
+the phrase are encapsulated within a PCM instance.  Use <tt>PCM.getPhrase</tt>
+to get the phrase instance residing within the PCM instance:
+</p>
+<div class="block"><pre>
+	  System.out.println(&quot;Phrase:&quot;);
+	  System.out.println(&quot; text: &quot; + pcm.getPhrase().getPhraseText());
+</pre></div>
+<p class="Body">
+Similarly, get the candidate list using <tt>PCM.getCandidateList()</tt>:
+</p>
+<div class="block"><pre>
+          System.out.println(&quot;Candidates:&quot;);
+          for (Ev ev: pcm.getCandidateList()) {
+            System.out.println(&quot; Candidate:&quot;);
+            System.out.println(&quot;  Score: &quot; + ev.getScore());
+            System.out.println(&quot;  Concept Id: &quot; + ev.getConceptId());
+            System.out.println(&quot;  Concept Name: &quot; + ev.getConceptName());
+            System.out.println(&quot;  Preferred Name: &quot; + ev.getPreferredName());
+            System.out.println(&quot;  Matched Words: &quot; + ev.getMatchedWords());
+            System.out.println(&quot;  Semantic Types: &quot; + ev.getSemanticTypes());
+            System.out.println(&quot;  MatchMap: &quot; + ev.getMatchMap());
+            System.out.println(&quot;  MatchMap alt. repr.: &quot; + ev.getMatchMapList());
+            System.out.println(&quot;  is Head?: &quot; + ev.isHead());
+            System.out.println(&quot;  is Overmatch?: &quot; + ev.isOvermatch());
+            System.out.println(&quot;  Sources: &quot; + ev.getSources());
+            System.out.println(&quot;  Positional Info: &quot; + ev.getPositionalInfo());
+          }
+</pre></div>
+<p class="Body">
+One can get the mappings list from the PCM instance using <tt>PCM.getMappingList</tt>:
+</p>
+<div class="block"><pre>
+          System.out.println(&quot;Mappings:&quot;);
+          for (Mapping map: pcm.getMappingList()) {
+            System.out.println(&quot; Map Score: &quot; + map.getScore());
+            for (Ev mapEv: map.getEvList()) {
+              System.out.println(&quot;   Score: &quot; + mapEv.getScore());
+              System.out.println(&quot;   Concept Id: &quot; + mapEv.getConceptId());
+              System.out.println(&quot;   Concept Name: &quot; + mapEv.getConceptName());
+              System.out.println(&quot;   Preferred Name: &quot; + mapEv.getPreferredName());
+              System.out.println(&quot;   Matched Words: &quot; + mapEv.getMatchedWords());
+              System.out.println(&quot;   Semantic Types: &quot; + mapEv.getSemanticTypes());
+              System.out.println(&quot;   MatchMap: &quot; + mapEv.getMatchMap());
+              System.out.println(&quot;   MatchMap alt. repr.: &quot; + mapEv.getMatchMapList());
+              System.out.println(&quot;   is Head?: &quot; + mapEv.isHead());
+              System.out.println(&quot;   is Overmatch?: &quot; + mapEv.isOvermatch());
+              System.out.println(&quot;   Sources: &quot; + mapEv.getSources());
+              System.out.println(&quot;   Positional Info: &quot; + mapEv.getPositionalInfo());
+            }
+          }
+    }
+}
+</pre></div>
+<p class="Body">
+Refer to the API javadoc for more information on the available methods
+for each interface.
+</p>
+<p class="Body">
+A complete example of this code is in
+<tt>src/javaapi/sources/gov/nih/nlm/nls/metamap/MetaMapApiTest.java</tt>.
+</p>
+<!--End Section 3-->
+<!-- End SectLevel3 -->
+<!--End Section 2-->
+<h3><a name="Getting Raw MetaMap Machine Output">Getting Raw MetaMap Machine Output</a></h3>
+<p class="Body">
+A copy of the raw MetaMap machine output can be obtained by using the
+instance method <tt>Result.getMachineOutput</tt>:
+</p>
+<div class="block"><pre>
+List&lt;Result&gt; resultList = api.processCitationsFromString(terms);
+Result result = resultList.get(0);
+String machineOutput = result.getMachineOutput();
+</pre></div>
+<!--End Section 2-->
+<!-- End SectLevel2 -->
+<!--End Section 1-->
+<h2><a name="Advanced Configuration">Advanced Configuration</a></h2>
+<!-- Start SectLevel2 -->
+<h3><a name="Running the metamap server on an alternate host">Running the metamap server on an alternate host</a></h3>
+<p class="Body">
+To run the metamap server on a host other than localhost (127.0.0.1),
+the default modify the environment variable ACCEPTED_HOSTS the script
+/bin/mmserver10 to contain all of the clients you wish to have access
+to the MetaMap server.
+</p>
+<p class="Body">
+For example, change the entry:
+</p>
+<div class="block"><pre>
+ACCEPTED_HOSTS=&quot;['127.0.0.1']&quot;
+export ACCEPTED_HOSTS
+</pre></div>
+<p class="Body">
+to:
+</p>
+<div class="block"><pre>
+ACCEPTED_HOSTS=&quot;['127.0.0.1','192.168.111.27','192.168.111.61','192.168.111.76']&quot;
+export ACCEPTED_HOSTS
+</pre></div>
+<p class="Body">
+all of the entries must be ip-addresses, hostnames will not work.
+</p>
+<!--End Section 2-->
+<h3><a name="Running the  metamap server on an alternate port">Running the  metamap server on an alternate port</a></h3>
+<p class="Body">
+To run the metamap server on a port other than the default port (8066)
+modify the environment variable &quot;MMSERVER_PORT&quot; in the script bin/mmserver10.
+</p>
+<p class="Body">
+E.G. to change the port to 8888:
+</p>
+<div class="block"><pre>
+MMSERVER_PORT=8888
+export MMSERVER_PORT
+</pre></div>
+<!--End Section 2-->
+<h3><a name="Specifying alternate MetaMap Server hosts and ports in the API">Specifying alternate MetaMap Server hosts and ports in the API</a></h3>
+<p class="Body">
+The MetaMap Java API now includes the methods <tt>setHost</tt> and <tt>setPort</tt>
+to specify the host and port locations of the MetaMap server.  The
+source to the class gov.nih.nlm.nls.metamap.MetaMapApiTest
+(public_mm/src/javaapi/sources/gov/nih/nlm/nls/metamap/
+MetaMapApiTest.java) contains an example of the use of these methods.
+</p>
+<!--End Section 2-->
+<!-- End SectLevel2 -->
+<!--End Section 1-->
+<h2><a name="Possible enhancements">Possible enhancements</a></h2>
+<p class="Body">
+Possible enchancments include providing a UIMA module that uses an
+underlying MetaMapApi instance, providing a factory method for
+instantiating MetaMapApi instances, and providing instantiation of
+instances through JNDI.
+</p>
+<!--End Section 1-->
+<h2><a name="Differences compared to MMTx API">Differences compared to MMTx API</a></h2>
+<p class="Body">
+The MetaMap Java API only provides access to components available
+through machine output.  That includes The Final mappings, the
+Candidates, Phrases, Utterances, Negated Concepts, and Acronyms and
+Abbreviations.  Access to structures such as lexical elements and
+tokenization that were available in the eariler MMTx API are not
+currently available in the MetaMap API.
+</p>
+<!--End Section 1-->
+<h2><a name="For more information">For more information</a></h2>
+<dl>
+<dt><strong>Quintus Prolog</strong></dt><dd> <a class="link" href="http://www.sics.se/isl/quintus/html/quintus">http://www.sics.se/isl/quintus/html/quintus</a>/</dd>
+<dt><strong>PrologBeans</strong></dt><dd> <a class="link" href="http://www.sics.se/sicstus/docs/3.12.9/html/prologbeans">http://www.sics.se/sicstus/docs/3.12.9/html/prologbeans</a>/</dd>
+<dt><strong>MetaMap</strong></dt><dd> <a class="link" href="http://metamap.nlm.nih.gov">http://metamap.nlm.nih.gov</a>/</dd>
+</dl>
+<!--End Section 1-->
+<!-- End SectLevel1 -->
+<hr>
+<br>
+<p align="right"> <small>This document was generated using <a class="link" href="http://www.maplefish.com/todd/aft.html">AFT v5.097</a></small> </p>
+</body>
+</html>
+
